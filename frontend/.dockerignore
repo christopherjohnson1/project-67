@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# Build output
+dist/
+.angular/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+
+# Git
+.git/
+.gitignore
+
+# Tests
+coverage/
+*.spec.ts
+karma.conf.js
+e2e/
+
+# Documentation
+README.md
+
+# Docker files
+Dockerfile
+docker-compose*.yml
+.dockerignore
+

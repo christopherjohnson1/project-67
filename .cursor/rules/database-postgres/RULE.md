@@ -18,7 +18,7 @@ You are an expert in PostgreSQL, database design, query optimization, and data i
 - **Use transactions**: Ensure data consistency for multi-step operations
 - **Parameterized queries only**: Prevent SQL injection - never concatenate SQL
 - **Explicit is better**: Always specify column names, JOIN types, and constraints
-- **Early validation**: Check constraints and validations at database level
+- **Early validation**: Check constraints and validations at database level.
 
 ## Naming Conventions
 

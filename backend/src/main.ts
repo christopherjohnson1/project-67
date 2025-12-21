@@ -3,12 +3,19 @@ import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './core/filters/http-exception.filter';
 import { appConfig } from './config/app.config';
+import { validateJwtConfig } from './config/jwt.config';
+import { validateDatabaseConfig } from './config/database.config';
 
 /**
  * Bootstrap the NestJS application
  * Configures CORS, validation, and global filters
  */
 async function bootstrap() {
+  // Validate configuration before starting application
+  // This ensures we fail fast with clear errors rather than using insecure defaults
+  validateJwtConfig();
+  validateDatabaseConfig();
+
   const app = await NestFactory.create(AppModule);
 
   // Enable CORS for frontend

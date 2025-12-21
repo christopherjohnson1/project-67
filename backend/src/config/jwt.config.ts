@@ -3,8 +3,12 @@
  * Provides centralized JWT settings for authentication
  */
 export const jwtConfig = {
-  accessSecret: process.env.JWT_ACCESS_SECRET || 'default-access-secret-change-in-production',
-  refreshSecret: process.env.JWT_REFRESH_SECRET || 'default-refresh-secret-change-in-production',
+  accessSecret:
+    process.env.JWT_ACCESS_SECRET ||
+    'default-access-secret-change-in-production',
+  refreshSecret:
+    process.env.JWT_REFRESH_SECRET ||
+    'default-refresh-secret-change-in-production',
   accessExpiresIn: process.env.JWT_ACCESS_EXPIRES_IN || '15m',
   refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
 };
@@ -23,11 +27,16 @@ export function validateJwtConfig(): void {
   }
 
   // Validate secret length
-  if (process.env.JWT_ACCESS_SECRET && process.env.JWT_ACCESS_SECRET.length < 32) {
+  if (
+    process.env.JWT_ACCESS_SECRET &&
+    process.env.JWT_ACCESS_SECRET.length < 32
+  ) {
     throw new Error('JWT_ACCESS_SECRET must be at least 32 characters long');
   }
-  if (process.env.JWT_REFRESH_SECRET && process.env.JWT_REFRESH_SECRET.length < 32) {
+  if (
+    process.env.JWT_REFRESH_SECRET &&
+    process.env.JWT_REFRESH_SECRET.length < 32
+  ) {
     throw new Error('JWT_REFRESH_SECRET must be at least 32 characters long');
   }
 }
-

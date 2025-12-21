@@ -18,9 +18,8 @@ RUN npm ci
 
 # Copy TypeScript configuration
 COPY tsconfig*.json ./
-COPY mikro-orm.config.ts ./
 
-# Copy source code
+# Copy source code (includes mikro-orm.config.ts)
 COPY src ./src
 
 # Build TypeScript to JavaScript
@@ -47,7 +46,6 @@ RUN npm ci --only=production && \
 
 # Copy built application from builder stage
 COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist
-COPY --from=builder --chown=nodejs:nodejs /app/mikro-orm.config.ts ./
 
 # Create uploads directory
 RUN mkdir -p /app/uploads && chown nodejs:nodejs /app/uploads

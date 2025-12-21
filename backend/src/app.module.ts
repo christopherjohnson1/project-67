@@ -7,7 +7,7 @@ import { SharedModule } from './shared/shared.module';
 import { HealthModule } from './modules/health/health.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { PuzzlesModule } from './modules/puzzles/puzzles.module';
-import mikroOrmConfig from '../mikro-orm.config';
+import mikroOrmConfig from './mikro-orm.config';
 
 /**
  * Root application module

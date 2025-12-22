@@ -86,9 +86,22 @@ else
 fi
 echo ""
 
+# Detect docker compose command (V1 vs V2)
+if command -v docker-compose &> /dev/null; then
+  DOCKER_COMPOSE="docker-compose"
+elif docker compose version &> /dev/null; then
+  DOCKER_COMPOSE="docker compose"
+else
+  print_error "Docker Compose is not installed"
+  echo "Please install Docker Compose: https://docs.docker.com/compose/install/"
+  exit 1
+fi
+print_status "Using Docker Compose: $DOCKER_COMPOSE"
+echo ""
+
 # Step 4: Stop running containers
 print_status "Stopping running containers..."
-if docker-compose down; then
+if $DOCKER_COMPOSE down; then
   print_success "Containers stopped"
   log "Containers stopped"
 else
@@ -106,7 +119,7 @@ echo ""
 # Step 6: Build containers
 if [ "$REBUILD" = true ]; then
   print_status "Building Docker containers (this may take a while on Raspberry Pi)..."
-  if docker-compose build --no-cache; then
+  if $DOCKER_COMPOSE build --no-cache; then
     print_success "Containers built successfully"
     log "Docker build successful"
   else
@@ -122,7 +135,7 @@ echo ""
 
 # Step 7: Start containers
 print_status "Starting containers..."
-if docker-compose up -d; then
+if $DOCKER_COMPOSE up -d; then
   print_success "Containers started"
   log "Containers started"
 else
@@ -138,7 +151,7 @@ sleep 5
 
 # Check container status
 print_status "Container status:"
-docker-compose ps
+$DOCKER_COMPOSE ps
 echo ""
 
 # Step 9: Show service URLs
@@ -158,16 +171,16 @@ echo ""
 # Step 10: Show recent logs
 print_status "Recent logs (last 20 lines):"
 echo ""
-docker-compose logs --tail=20
+$DOCKER_COMPOSE logs --tail=20
 echo ""
 
 # Step 11: Final instructions
 print_status "Useful commands:"
-echo "  • View logs:           docker-compose logs -f"
-echo "  • View specific logs:  docker-compose logs -f [frontend|backend|db]"
-echo "  • Stop app:            docker-compose down"
-echo "  • Restart app:         docker-compose restart"
-echo "  • Check status:        docker-compose ps"
+echo "  • View logs:           $DOCKER_COMPOSE logs -f"
+echo "  • View specific logs:  $DOCKER_COMPOSE logs -f [frontend|backend|db]"
+echo "  • Stop app:            $DOCKER_COMPOSE down"
+echo "  • Restart app:         $DOCKER_COMPOSE restart"
+echo "  • Check status:        $DOCKER_COMPOSE ps"
 echo ""
 
 log "Deployment completed successfully"

@@ -45,7 +45,7 @@ services:
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:?JWT_REFRESH_SECRET is required}
       JWT_ACCESS_EXPIRES_IN: ${JWT_ACCESS_EXPIRES_IN:-15m}
       JWT_REFRESH_EXPIRES_IN: ${JWT_REFRESH_EXPIRES_IN:-7d}
-      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:4200}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost,http://localhost:4200}
     ports:
       - "3000:3000"
     volumes:

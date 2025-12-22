@@ -1,0 +1,30 @@
+<div class="hint-dialog">
+  <h2 mat-dialog-title class="dialog-title">
+    <mat-icon class="hint-icon">lightbulb</mat-icon>
+    Hint{{ data.hintNumber ? ' ' + data.hintNumber : '' }}
+  </h2>
+
+  <mat-dialog-content class="dialog-content">
+    <div class="puzzle-info">
+      <strong>{{ data.puzzleTitle }}</strong>
+    </div>
+
+    <div class="hint-content">
+      <p>{{ data.hint }}</p>
+    </div>
+
+    <div class="hint-progress" *ngIf="data.hintNumber && data.totalHints">
+      <span class="progress-text">
+        Hint {{ data.hintNumber }} of {{ data.totalHints }}
+      </span>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="dialog-actions">
+    <button mat-raised-button color="primary" (click)="onClose()">
+      <mat-icon>check</mat-icon>
+      Got it!
+    </button>
+  </mat-dialog-actions>
+</div>
+

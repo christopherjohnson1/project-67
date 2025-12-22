@@ -1,0 +1,51 @@
+<mat-card class="puzzle-card" [class.completed]="puzzle.isCompleted" [class.locked]="puzzle.isLocked">
+  <mat-card-header>
+    <mat-icon mat-card-avatar [class.completed-icon]="puzzle.isCompleted" [class.locked-icon]="puzzle.isLocked">
+      {{ getPuzzleIcon() }}
+    </mat-icon>
+    <mat-card-title>{{ puzzle.title }}</mat-card-title>
+    <mat-card-subtitle>{{ puzzle.type | titlecase }} Puzzle</mat-card-subtitle>
+  </mat-card-header>
+
+  <img *ngIf="puzzle.imageUrl" mat-card-image [src]="puzzle.imageUrl" [alt]="puzzle.title" class="puzzle-image">
+
+  <mat-card-content>
+    <p *ngIf="puzzle.description" class="puzzle-description">
+      {{ puzzle.description }}
+    </p>
+
+    <mat-chip-set class="puzzle-status">
+      <mat-chip [color]="getStatusChipColor()" highlighted>
+        {{ getStatusText() }}
+      </mat-chip>
+    </mat-chip-set>
+  </mat-card-content>
+
+  <mat-card-actions *ngIf="showActions && !puzzle.isLocked">
+    <button 
+      mat-raised-button 
+      color="primary" 
+      (click)="onStartPuzzle()"
+      [disabled]="puzzle.isCompleted">
+      <mat-icon>{{ puzzle.isCompleted ? 'check' : 'play_arrow' }}</mat-icon>
+      {{ puzzle.isCompleted ? 'Completed' : 'Start Puzzle' }}
+    </button>
+
+    <button 
+      mat-button 
+      color="accent" 
+      (click)="onRequestHint()"
+      *ngIf="!puzzle.isCompleted">
+      <mat-icon>lightbulb</mat-icon>
+      Hint
+    </button>
+  </mat-card-actions>
+
+  <mat-card-actions *ngIf="puzzle.isLocked" class="locked-actions">
+    <button mat-button disabled>
+      <mat-icon>lock</mat-icon>
+      Complete previous puzzles to unlock
+    </button>
+  </mat-card-actions>
+</mat-card>
+

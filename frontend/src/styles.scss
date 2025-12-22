@@ -1,1 +1,83 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global Styles for Treasure Hunt App */
+
+// Import Angular Material theming
+@use '@angular/material' as mat;
+
+// Include the common styles for Angular Material
+@include mat.core();
+
+// Create the theme with treasure hunt colors (gold/orange and teal)
+$treasure-hunt-theme: mat.define-theme((
+  color: (
+    theme-type: dark,
+    primary: mat.$orange-palette,
+    tertiary: mat.$cyan-palette,
+  ),
+  typography: (
+    brand-family: 'Roboto',
+    plain-family: 'Roboto',
+  ),
+  density: (
+    scale: 0,
+  )
+));
+
+// Include theme styles for core and all components
+@include mat.all-component-themes($treasure-hunt-theme);
+
+// Global styles
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #121212;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+// Mobile-first responsive typography
+@media (max-width: 600px) {
+  body {
+    font-size: 14px;
+  }
+  
+  h1 {
+    font-size: 24px;
+  }
+  
+  h2 {
+    font-size: 20px;
+  }
+  
+  h3 {
+    font-size: 18px;
+  }
+}
+
+// Touch-friendly buttons and interactive elements
+button, a, .clickable {
+  min-height: 44px;
+  min-width: 44px;
+  cursor: pointer;
+}
+
+// Smooth scrolling
+html {
+  scroll-behavior: smooth;
+}
+
+// Focus styles for accessibility
+*:focus-visible {
+  outline: 2px solid #ffc107;
+  outline-offset: 2px;
+}

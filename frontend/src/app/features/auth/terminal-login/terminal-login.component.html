@@ -1,0 +1,43 @@
+<div class="terminal-wrapper" (click)="onTerminalClick()">
+  <div class="terminal-container" #terminalContainer>
+    <div class="terminal-content">
+      <!-- Terminal output lines -->
+      <div *ngFor="let line of lines" 
+           class="terminal-line"
+           [ngClass]="'terminal-' + line.type">
+        {{ line.text }}
+      </div>
+
+      <!-- Current input line -->
+      <div class="terminal-line terminal-input-line" *ngIf="!isProcessing">
+        <span class="terminal-prompt">{{ getPrompt() }}</span>
+        <span class="terminal-input-display">
+          <span *ngIf="context.awaitingPassword">{{ '*'.repeat(currentInput.length) }}</span>
+          <span *ngIf="!context.awaitingPassword">{{ currentInput }}</span>
+          <span class="terminal-cursor" [class.blink]="showCursor">█</span>
+        </span>
+      </div>
+
+      <!-- Processing indicator -->
+      <div class="terminal-line terminal-processing" *ngIf="isProcessing">
+        <span class="processing-dots">...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden input field for mobile keyboard support -->
+  <input
+    #terminalInput
+    type="text"
+    class="terminal-hidden-input"
+    [(ngModel)]="currentInput"
+    (keydown)="handleInput($event)"
+    [disabled]="isProcessing"
+    autocomplete="off"
+    autocorrect="off"
+    autocapitalize="off"
+    spellcheck="false"
+    [attr.type]="context.awaitingPassword ? 'password' : 'text'"
+  />
+</div>
+

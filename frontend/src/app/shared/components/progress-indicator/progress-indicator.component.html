@@ -1,0 +1,38 @@
+<div class="progress-indicator" [class.complete]="isComplete">
+  <div class="progress-header" *ngIf="showDetails">
+    <div class="progress-title">
+      <mat-icon class="progress-icon">{{ isComplete ? 'emoji_events' : 'explore' }}</mat-icon>
+      <span class="title-text">
+        {{ isComplete ? 'Treasure Hunt Complete!' : 'Your Progress' }}
+      </span>
+    </div>
+    <div class="progress-stats">
+      <span class="stat-text">
+        {{ completedPuzzles }} / {{ totalPuzzles }} Puzzles
+      </span>
+      <span class="percentage-text">{{ progressPercentage }}%</span>
+    </div>
+  </div>
+
+  <mat-progress-bar
+    mode="determinate"
+    [value]="progressPercentage"
+    [color]="isComplete ? 'primary' : 'accent'"
+    class="progress-bar">
+  </mat-progress-bar>
+
+  <div class="progress-footer" *ngIf="showDetails && !isComplete">
+    <p class="encouragement-text">
+      <mat-icon class="small-icon">local_fire_department</mat-icon>
+      {{ remainingPuzzles }} puzzle{{ remainingPuzzles !== 1 ? 's' : '' }} remaining
+    </p>
+  </div>
+
+  <div class="completion-message" *ngIf="isComplete">
+    <p class="celebration-text">
+      <mat-icon class="trophy-icon">emoji_events</mat-icon>
+      Congratulations! You've completed all puzzles!
+    </p>
+  </div>
+</div>
+

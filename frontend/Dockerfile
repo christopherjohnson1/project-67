@@ -13,8 +13,8 @@ WORKDIR /app
 # Copy package files for dependency installation
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci
+# Install dependencies (using legacy-peer-deps for Angular Material compatibility)
+RUN npm ci --legacy-peer-deps
 
 # Copy Angular application files
 COPY . .

@@ -86,7 +86,8 @@ Ensure Docker Desktop is running on your Mac.
 
 ### 2. Build Docker Images
 ```bash
-cd /Users/christopherjohnson/workspace/project-67
+# Navigate to the project root directory
+cd project-67
 docker compose build
 ```
 

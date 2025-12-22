@@ -73,7 +73,9 @@ project-67/
 ### 1. Clone and Setup
 
 ```bash
-cd /Users/christopherjohnson/workspace/project-67
+# Clone the repository and navigate to the project directory
+git clone <repository-url>
+cd project-67
 cp .env.example .env
 ```
 

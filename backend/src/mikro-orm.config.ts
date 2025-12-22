@@ -11,6 +11,11 @@ const config: MikroOrmModuleOptions = {
   entities: ['./dist/**/*.entity.js'],
   entitiesTs: ['./src/**/*.entity.ts'],
   debug: process.env.NODE_ENV !== 'production',
+  allowGlobalContext: true,
+  discovery: {
+    warnWhenNoEntities: false,
+    requireEntitiesArray: false,
+  },
   migrations: {
     path: './dist/migrations',
     pathTs: './src/migrations',

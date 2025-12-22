@@ -16,7 +16,7 @@ import { AuthService } from '../../../core/services/auth.service';
     MatIconModule
   ],
   templateUrl: './welcome.component.html',
-  styleUrls: ['./welcome.component.scss']
+  styleUrl: './welcome.component.scss'
 })
 export class WelcomeComponent implements OnInit {
   userName: string = '';

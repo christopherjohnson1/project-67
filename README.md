@@ -223,43 +223,86 @@ curl http://localhost:3000/api/health
 
 ## Deployment to Raspberry Pi
 
+### Quick Start
+
+This project includes automated deployment scripts for easy deployment to your Raspberry Pi.
+
+**Full deployment (with rebuild):**
+```bash
+./deploy.sh
+```
+
+**Quick deployment (code changes only):**
+```bash
+./quick-deploy.sh
+```
+
+For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)
+
 ### Prerequisites on Pi
 - Docker and Docker Compose installed
 - SSH access configured
-- Port 80 and 443 available
+- Port 80 and 3000 available
+- Git installed
 
-### Deployment Steps
+### Initial Setup
 
-1. **Build images for ARM architecture:**
-```bash
-docker buildx build --platform linux/arm64 -t treasure-hunt-backend ./backend
-docker buildx build --platform linux/arm64 -t treasure-hunt-frontend ./frontend
-```
-
-2. **Save images:**
-```bash
-docker save treasure-hunt-backend | gzip > backend-image.tar.gz
-docker save treasure-hunt-frontend | gzip > frontend-image.tar.gz
-```
-
-3. **Copy to Pi:**
-```bash
-scp backend-image.tar.gz pi@raspberrypi.local:~/
-scp frontend-image.tar.gz pi@raspberrypi.local:~/
-scp docker-compose.yml pi@raspberrypi.local:~/
-scp .env pi@raspberrypi.local:~/
-scp -r database pi@raspberrypi.local:~/
-```
-
-4. **On the Pi:**
+1. **Clone the repository on your Pi:**
 ```bash
 ssh pi@raspberrypi.local
-gunzip -c backend-image.tar.gz | docker load
-gunzip -c frontend-image.tar.gz | docker load
-docker compose up -d
+cd /home/pi
+git clone <your-repo-url> treasure-hunt
+cd treasure-hunt
 ```
 
-### Remote Access with Cloudflare Tunnel
+2. **Make deployment scripts executable:**
+```bash
+chmod +x deploy.sh quick-deploy.sh
+```
+
+3. **Run initial deployment:**
+```bash
+./deploy.sh
+```
+
+### Deployment Options
+
+| Script | Use Case | Time |
+|--------|----------|------|
+| `./deploy.sh` | Full rebuild (dependencies changed) | ~10-15 min |
+| `./quick-deploy.sh` | Code changes only (no dependencies) | ~30 sec |
+| `./deploy.sh --no-rebuild` | Pull and restart (no rebuild) | ~1 min |
+
+### What the Deploy Script Does
+
+✅ Pulls latest changes from Git  
+✅ Stops running containers  
+✅ Cleans up old Docker images  
+✅ Rebuilds containers with fresh code  
+✅ Starts all services  
+✅ Shows status and logs  
+✅ Logs all operations to `deploy.log`
+
+### Monitoring After Deployment
+
+```bash
+# View all logs
+docker-compose logs -f
+
+# View specific service logs
+docker-compose logs -f frontend
+docker-compose logs -f backend
+
+# Check container status
+docker-compose ps
+
+# Check deployment history
+tail -50 deploy.log
+```
+
+### Remote Access with Cloudflare Tunnel (Optional)
+
+For secure remote access without opening ports:
 
 ```bash
 # Install on Pi

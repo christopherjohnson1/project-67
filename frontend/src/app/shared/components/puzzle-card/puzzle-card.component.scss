@@ -1,0 +1,78 @@
+.puzzle-card {
+  max-width: 400px;
+  margin: 16px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+
+  &:hover:not(.locked) {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  &.completed {
+    border: 2px solid #ffc107;
+    background: rgba(255, 193, 7, 0.05);
+  }
+
+  &.locked {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.completed-icon {
+  color: #ffc107;
+}
+
+.locked-icon {
+  color: #f44336;
+}
+
+.puzzle-image {
+  max-height: 200px;
+  object-fit: cover;
+}
+
+.puzzle-description {
+  margin: 16px 0;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.5;
+}
+
+.puzzle-status {
+  margin-top: 12px;
+}
+
+mat-card-actions {
+  display: flex;
+  gap: 8px;
+  padding: 16px;
+  flex-wrap: wrap;
+
+  button {
+    flex: 1;
+    min-width: 120px;
+  }
+}
+
+.locked-actions {
+  justify-content: center;
+
+  button {
+    flex: none;
+  }
+}
+
+// Mobile optimization
+@media (max-width: 600px) {
+  .puzzle-card {
+    margin: 12px;
+    max-width: 100%;
+  }
+
+  mat-card-actions button {
+    min-width: 100px;
+    font-size: 14px;
+  }
+}
+

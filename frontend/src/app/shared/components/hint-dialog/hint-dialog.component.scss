@@ -1,0 +1,99 @@
+.hint-dialog {
+  padding: 8px;
+}
+
+.dialog-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #ffc107;
+  margin: 0;
+  padding: 16px 24px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.hint-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+  color: #ffc107;
+}
+
+.dialog-content {
+  padding: 16px 24px !important;
+  min-width: 300px;
+  max-width: 500px;
+}
+
+.puzzle-info {
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+
+  strong {
+    color: rgba(255, 255, 255, 0.9);
+  }
+}
+
+.hint-content {
+  background: rgba(255, 193, 7, 0.1);
+  border-left: 3px solid #ffc107;
+  padding: 16px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+
+  p {
+    margin: 0;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.87);
+  }
+}
+
+.hint-progress {
+  text-align: center;
+  padding-top: 8px;
+}
+
+.progress-text {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dialog-actions {
+  padding: 16px 24px !important;
+  justify-content: center !important;
+
+  button {
+    min-width: 120px;
+  }
+}
+
+// Mobile optimization
+@media (max-width: 600px) {
+  .dialog-content {
+    min-width: 250px;
+    max-width: 90vw;
+  }
+
+  .dialog-title {
+    font-size: 20px;
+    padding: 12px 16px;
+  }
+
+  .hint-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+  }
+
+  .dialog-content,
+  .dialog-actions {
+    padding: 12px 16px !important;
+  }
+}
+

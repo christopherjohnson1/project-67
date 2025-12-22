@@ -13,7 +13,7 @@ export interface User {
  * Login credentials
  */
 export interface LoginCredentials {
-  username: string;
+  email: string;
   password: string;
 }
 

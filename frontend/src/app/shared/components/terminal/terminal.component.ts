@@ -283,7 +283,8 @@ export class TerminalComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   addLine(text: string, type: TerminalLine['type'] = 'output'): void {
     this.lines.push({ text, type, timestamp: new Date() });
-    setTimeout(() => this.scrollToBottom(), 10);
+    // Use requestAnimationFrame for scroll
+    requestAnimationFrame(() => this.scrollToBottom());
   }
 
   /**

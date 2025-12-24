@@ -9,9 +9,11 @@ $terminal-warning: #ffaa00;
 $terminal-info: #00aaff;
 
 .terminal-wrapper {
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   background: $terminal-bg;
   display: flex;
   flex-direction: column;
@@ -210,39 +212,17 @@ $terminal-info: #00aaff;
   }
 }
 
-// Universal input field
+// Universal input field - hidden on all devices
 .terminal-input {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 50px;
-  font-size: 16px;
-  font-family: 'Courier New', 'Monaco', 'Consolas', monospace;
-  background: transparent;
-  border: none;
-  color: $terminal-green;
-  padding: 10px 20px;
-  z-index: 1000;
-  caret-color: $terminal-green;
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  font-size: 16px; // Prevent zoom on iOS when focused
   
   &:focus {
     outline: none;
-    background: rgba(0, 255, 0, 0.05);
-  }
-  
-  // On desktop, hide it completely
-  @media (min-width: 769px) {
-    position: absolute;
-    left: -9999px;
-    width: 1px;
-    height: 1px;
-    opacity: 0;
-  }
-  
-  // On mobile, make it visible at bottom
-  @media (max-width: 768px) {
-    border-top: 1px solid rgba(0, 255, 0, 0.3);
   }
 }
 
@@ -251,7 +231,7 @@ $terminal-info: #00aaff;
   .terminal-container {
     padding: 15px;
     font-size: 14px;
-    padding-bottom: 60px; // Make room for input at bottom
+    padding-bottom: 20px; // Minimal padding since input is hidden
   }
 
   .terminal-line {

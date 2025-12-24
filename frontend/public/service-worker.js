@@ -1,5 +1,5 @@
 // Service Worker for PWA
-const CACHE_VERSION = 'v4';
+const CACHE_VERSION = 'v5-game-view';
 const CACHE_NAME = `treasure-hunt-${CACHE_VERSION}`;
 
 // Assets to precache (only static assets, not hashed build files)

@@ -110,9 +110,8 @@ export class WelcomeComponent implements OnInit {
   }
 
   private beginAdventure(): void {
-    // TODO: Navigate to first puzzle when puzzles module is ready
-    console.log('Beginning adventure...');
-    // this.router.navigate(['/puzzles']);
+    // Navigate to main game view
+    this.router.navigate(['/game']);
   }
 
   private logout(): void {

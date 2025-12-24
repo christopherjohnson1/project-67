@@ -1,0 +1,15 @@
+<div class="modal-backdrop" @backdropAnimation (click)="onBackdropClick($event)">
+  <div class="modal-container" @modalAnimation [style.max-width]="modalMaxWidth">
+    <div class="modal-header">
+      <h2 class="modal-title" *ngIf="modalTitle">{{ modalTitle }}</h2>
+      <button class="modal-close" (click)="close()" aria-label="Close modal">
+        <span class="close-icon">×</span>
+      </button>
+    </div>
+    
+    <div class="modal-content">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</div>
+

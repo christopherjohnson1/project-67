@@ -1,0 +1,35 @@
+<div class="game-container">
+  <!-- Mobile Hamburger Menu -->
+  <button 
+    class="mobile-menu-toggle"
+    (click)="toggleSidebar()"
+    [class.active]="!sidebarCollapsed"
+    aria-label="Toggle menu">
+    <span class="hamburger-icon">☰</span>
+  </button>
+
+  <div class="game-view" [class.sidebar-collapsed]="sidebarCollapsed">
+    <!-- Sidebar -->
+    <app-sidebar
+      [collapsed]="sidebarCollapsed"
+      (toggleCollapse)="toggleSidebar()"
+      (menuItemClick)="onMenuItemClick($event)">
+    </app-sidebar>
+
+    <!-- Backdrop for mobile -->
+    <div 
+      class="sidebar-backdrop" 
+      *ngIf="!sidebarCollapsed"
+      (click)="toggleSidebar()">
+    </div>
+
+    <!-- Game Board -->
+    <div class="game-board-container">
+      <app-game-board></app-game-board>
+    </div>
+  </div>
+
+  <!-- Modal Container -->
+  <ng-container #modalContainer></ng-container>
+</div>
+

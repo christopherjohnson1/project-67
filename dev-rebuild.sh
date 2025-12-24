@@ -132,3 +132,4 @@ if [[ "$response" =~ ^[Yy]$ ]]; then
   $DOCKER_COMPOSE logs -f
 fi
 
+

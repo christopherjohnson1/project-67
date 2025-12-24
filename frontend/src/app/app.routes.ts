@@ -18,6 +18,12 @@ export const routes: Routes = [
       ),
     canActivate: [authGuard],
   },
+  {
+    path: 'game',
+    loadChildren: () =>
+      import('./features/game/game.routes').then((m) => m.gameRoutes),
+    canActivate: [authGuard],
+  },
   // Future routes for puzzles
   // {
   //   path: 'puzzles',

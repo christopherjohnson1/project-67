@@ -1,0 +1,33 @@
+<div class="game-board">
+  <!-- Background Image -->
+  <div class="game-board__background"></div>
+
+  <!-- Interactive Nodes -->
+  <div class="game-board__nodes">
+    <button
+      *ngFor="let node of nodes"
+      [class]="getNodeClass(node)"
+      [style.left.%]="node.position.x"
+      [style.top.%]="node.position.y"
+      (click)="onNodeClick(node)"
+      [@nodeAppear]
+      [attr.aria-label]="node.locationName + ' - ' + node.status">
+      <span class="node__marker"></span>
+      <span class="node__label">{{ node.locationName }}</span>
+    </button>
+  </div>
+
+  <!-- Animated Avatar -->
+  <div 
+    class="game-board__avatar"
+    [@avatarMove]="{ value: currentNodeId, params: { x: avatarPosition.x, y: avatarPosition.y } }"
+    [style.left.%]="avatarPosition.x"
+    [style.top.%]="avatarPosition.y">
+    <img 
+      src="/assets/game/avatar-kitty.png" 
+      alt="Your avatar" 
+      class="avatar__image"
+    />
+  </div>
+</div>
+

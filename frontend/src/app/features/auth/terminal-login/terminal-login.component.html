@@ -32,10 +32,12 @@
     [(ngModel)]="currentInput"
     (keydown)="handleInput($event)"
     [disabled]="isProcessing"
+    placeholder="Tap here to type..."
     autocomplete="off"
     autocorrect="off"
     autocapitalize="off"
     spellcheck="false"
+    inputmode="text"
     [attr.type]="context.awaitingPassword ? 'password' : 'text'"
   />
 </div>

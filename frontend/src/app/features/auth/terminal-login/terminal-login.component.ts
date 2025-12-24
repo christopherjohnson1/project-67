@@ -58,7 +58,10 @@ export class TerminalLoginComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   ngAfterViewInit(): void {
+    // Focus input immediately and again after a short delay for mobile
     this.focusInput();
+    setTimeout(() => this.focusInput(), 500);
+    setTimeout(() => this.focusInput(), 1000);
   }
 
   ngOnDestroy(): void {

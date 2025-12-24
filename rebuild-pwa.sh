@@ -8,19 +8,30 @@ set -e
 echo "🔄 Rebuilding PWA with icons..."
 echo ""
 
+# Detect docker compose command (V1 vs V2)
+if command -v docker-compose &> /dev/null; then
+  DOCKER_COMPOSE="docker-compose"
+elif docker compose version &> /dev/null; then
+  DOCKER_COMPOSE="docker compose"
+else
+  echo "✗ Docker Compose is not installed"
+  echo "Please install Docker Compose: https://docs.docker.com/compose/install/"
+  exit 1
+fi
+
 # Stop containers
 echo "1️⃣ Stopping containers..."
-docker-compose down
+$DOCKER_COMPOSE down
 
 # Rebuild frontend with no cache
 echo ""
 echo "2️⃣ Rebuilding frontend container (this may take a few minutes)..."
-docker-compose build --no-cache frontend
+$DOCKER_COMPOSE build --no-cache frontend
 
 # Start containers
 echo ""
 echo "3️⃣ Starting containers..."
-docker-compose up -d
+$DOCKER_COMPOSE up -d
 
 # Wait for services to be ready
 echo ""

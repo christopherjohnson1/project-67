@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -25,7 +25,6 @@ interface CommandContext {
 })
 export class TerminalLoginComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('terminalInput') terminalInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('terminalInputDesktop') terminalInputDesktop!: ElementRef<HTMLInputElement>;
   @ViewChild('terminalContainer') terminalContainer!: ElementRef<HTMLDivElement>;
 
   lines: TerminalLine[] = [];
@@ -49,7 +48,8 @@ export class TerminalLoginComponent implements OnInit, AfterViewInit, OnDestroy 
 
   constructor(
     private readonly authService: AuthService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -74,7 +74,7 @@ export class TerminalLoginComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   private async showBootSequence(): Promise<void> {
-    this.isProcessing = true;
+    // Add all boot messages immediately so they're visible on page load
     const bootMessages = [
       'Initializing treasure hunt system...',
       'Loading security protocols...',
@@ -90,11 +90,12 @@ export class TerminalLoginComponent implements OnInit, AfterViewInit, OnDestroy 
       ''
     ];
 
-    for (const message of bootMessages) {
-      await this.delay(50);
+    // Add all messages immediately for instant display
+    bootMessages.forEach(message => {
       this.addLine(message, 'output');
-    }
-    this.isProcessing = false;
+    });
+
+    // Boot complete, input is now ready
   }
 
   private showHelp(): void {
@@ -202,7 +203,7 @@ export class TerminalLoginComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private async processInput(): Promise<void> {
     const input = this.currentInput.trim();
-    
+
     // Display the command (masked if password)
     if (this.context.awaitingPassword) {
       this.addLine(`${this.PROMPT} ${'*'.repeat(input.length)}`, 'command');
@@ -278,7 +279,7 @@ export class TerminalLoginComponent implements OnInit, AfterViewInit, OnDestroy 
 
     try {
       await this.delay(500); // Simulate network delay
-      
+
       await this.authService.login({
         email: this.context.email!,
         password: password
@@ -287,8 +288,11 @@ export class TerminalLoginComponent implements OnInit, AfterViewInit, OnDestroy 
       this.addLine('✓ Authentication successful!', 'success');
       this.addLine('Access granted. Redirecting...', 'success');
       this.addLine('', 'output');
-      
-      await this.delay(1000);
+
+      // Stop processing indicator to show success messages clearly
+      this.isProcessing = false;
+
+      await this.delay(1500);
       this.router.navigate(['/welcome']);
     } catch (error) {
       this.addLine('✗ Authentication failed.', 'error');
@@ -299,8 +303,9 @@ export class TerminalLoginComponent implements OnInit, AfterViewInit, OnDestroy 
     }
   }
 
-  private addLine(text: string, type: TerminalLine['type']): void {
+  addLine(text: string, type: TerminalLine['type']): void {
     this.lines.push({ text, type, timestamp: new Date() });
+    this.cdr.detectChanges(); // Force Angular to detect the new line
     setTimeout(() => this.scrollToBottom(), 10);
   }
 
@@ -313,14 +318,18 @@ export class TerminalLoginComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private focusInput(): void {
     setTimeout(() => {
-      // On mobile, use the mobile input; on desktop, use the hidden input
-      const isMobile = window.innerWidth <= 768;
-      const inputToFocus = isMobile ? this.terminalInput : this.terminalInputDesktop;
-      
-      if (inputToFocus?.nativeElement) {
-        inputToFocus.nativeElement.focus();
+      if (this.terminalInput?.nativeElement) {
+        this.terminalInput.nativeElement.focus();
       }
     }, 10);
+  }
+
+  focusInputDirect(): void {
+    if (this.terminalInput?.nativeElement) {
+      this.terminalInput.nativeElement.focus();
+      // On mobile, click triggers focus which shows keyboard
+      this.terminalInput.nativeElement.click();
+    }
   }
 
   private delay(ms: number): Promise<void> {

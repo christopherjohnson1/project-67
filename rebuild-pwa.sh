@@ -61,6 +61,22 @@ else
   echo "❌ service-worker.js: Failed (HTTP $SW_STATUS)"
 fi
 
+# Check favicons
+echo "Checking favicons..."
+FAVICON_32_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost/favicon-32x32.png)
+if [ "$FAVICON_32_STATUS" = "200" ]; then
+  echo "✅ favicon-32x32.png: OK"
+else
+  echo "❌ favicon-32x32.png: Failed (HTTP $FAVICON_32_STATUS)"
+fi
+
+FAVICON_16_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost/favicon-16x16.png)
+if [ "$FAVICON_16_STATUS" = "200" ]; then
+  echo "✅ favicon-16x16.png: OK"
+else
+  echo "❌ favicon-16x16.png: Failed (HTTP $FAVICON_16_STATUS)"
+fi
+
 # Check key icons
 echo "Checking icons..."
 for size in 72 96 128 144 152 192 384 512; do

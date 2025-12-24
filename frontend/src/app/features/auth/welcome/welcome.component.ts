@@ -31,10 +31,10 @@ export class WelcomeComponent implements OnInit {
     const user = this.authService.getUser();
     this.userName = user?.username || 'Adventurer';
     
-    // Fade in animation
-    setTimeout(() => {
+    // Fade in animation using requestAnimationFrame
+    requestAnimationFrame(() => {
       this.showContent = true;
-    }, 100);
+    });
   }
 
   beginAdventure(): void {

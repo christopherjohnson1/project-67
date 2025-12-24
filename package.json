@@ -14,8 +14,15 @@
     "build:backend": "cd backend && npm run build",
     "build:frontend": "cd frontend && npm run build"
   },
-  "keywords": ["treasure-hunt", "angular", "nestjs", "postgresql"],
+  "keywords": [
+    "treasure-hunt",
+    "angular",
+    "nestjs",
+    "postgresql"
+  ],
   "author": "Christopher Johnson",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "sharp": "^0.34.5"
+  }
 }
-

@@ -98,6 +98,43 @@ export class AuthService {
   }
 
   /**
+   * Refresh access and refresh tokens
+   */
+  async refreshTokens(refreshToken: string): Promise<AuthResponseDto> {
+    try {
+      // Verify the refresh token
+      const payload = await this.jwtService.verifyAsync(refreshToken, {
+        secret: jwtConfig.refreshSecret,
+      });
+
+      // Validate this is the correct user
+      if (payload.sub !== this.USER_ID) {
+        throw new UnauthorizedException('Invalid token');
+      }
+
+      // Create user object
+      const user: UserDto = {
+        id: this.USER_ID,
+        username: this.USERNAME,
+        email: this.VALID_EMAIL,
+        createdAt: new Date(),
+      };
+
+      // Generate new tokens
+      const accessToken = await this.generateAccessToken(user);
+      const newRefreshToken = await this.generateRefreshToken(user);
+
+      return {
+        accessToken,
+        refreshToken: newRefreshToken,
+        user,
+      };
+    } catch (error) {
+      throw new UnauthorizedException('Invalid or expired refresh token');
+    }
+  }
+
+  /**
    * Hash password using bcrypt
    * Utility method for future use
    */

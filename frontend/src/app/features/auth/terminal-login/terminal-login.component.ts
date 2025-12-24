@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit, Cha
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subject, interval } from 'rxjs';
+import { takeUntil, take } from 'rxjs/operators';
 import { AuthService } from '../../../core/services/auth.service';
 
 interface TerminalLine {
@@ -34,7 +36,8 @@ export class TerminalLoginComponent implements OnInit, AfterViewInit, OnDestroy 
   context: CommandContext = {};
   isProcessing = false;
   showCursor = true;
-  private cursorInterval?: number;
+
+  private destroy$ = new Subject<void>();
 
   private readonly PROMPT = 'guest@treasure:~$';
   private readonly commands = new Map<string, () => void>([
@@ -58,25 +61,25 @@ export class TerminalLoginComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   ngAfterViewInit(): void {
-    // Focus input immediately and again after a short delay for mobile
-    this.focusInput();
-    setTimeout(() => this.focusInput(), 500);
-    setTimeout(() => this.focusInput(), 1000);
+    // Focus input immediately using requestAnimationFrame for reliability
+    requestAnimationFrame(() => {
+      this.focusInput();
+    });
   }
 
   ngOnDestroy(): void {
-    if (this.cursorInterval) {
-      window.clearInterval(this.cursorInterval);
-    }
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private startCursorBlink(): void {
-    this.cursorInterval = window.setInterval(() => {
+    interval(500).pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.showCursor = !this.showCursor;
-    }, 500);
+      this.cdr.markForCheck();
+    });
   }
 
-  private async showBootSequence(): Promise<void> {
+  private showBootSequence(): void {
     // Add all boot messages immediately so they're visible on page load
     const bootMessages = [
       'Initializing treasure hunt system...',
@@ -97,8 +100,6 @@ export class TerminalLoginComponent implements OnInit, AfterViewInit, OnDestroy 
     bootMessages.forEach(message => {
       this.addLine(message, 'output');
     });
-
-    // Boot complete, input is now ready
   }
 
   private showHelp(): void {
@@ -160,7 +161,7 @@ export class TerminalLoginComponent implements OnInit, AfterViewInit, OnDestroy 
     this.addLine('', 'output');
   }
 
-  async handleInput(event: KeyboardEvent): Promise<void> {
+  handleInput(event: KeyboardEvent): void {
     if (this.isProcessing) {
       event.preventDefault();
       return;
@@ -181,7 +182,7 @@ export class TerminalLoginComponent implements OnInit, AfterViewInit, OnDestroy 
 
     if (event.key === 'Enter') {
       event.preventDefault();
-      await this.processInput();
+      this.processInput();
     }
   }
 
@@ -204,7 +205,7 @@ export class TerminalLoginComponent implements OnInit, AfterViewInit, OnDestroy 
     }
   }
 
-  private async processInput(): Promise<void> {
+  private processInput(): void {
     const input = this.currentInput.trim();
 
     // Display the command (masked if password)
@@ -216,7 +217,7 @@ export class TerminalLoginComponent implements OnInit, AfterViewInit, OnDestroy 
 
     // Handle password input
     if (this.context.awaitingPassword) {
-      await this.handlePassword(input);
+      this.handlePassword(input);
       this.currentInput = '';
       this.focusInput();
       return;
@@ -269,7 +270,7 @@ export class TerminalLoginComponent implements OnInit, AfterViewInit, OnDestroy 
     this.addLine('Enter password:', 'prompt');
   }
 
-  private async handlePassword(password: string): Promise<void> {
+  private handlePassword(password: string): void {
     if (!password) {
       this.addLine('Password cannot be empty.', 'error');
       this.addLine('Enter password:', 'prompt');
@@ -280,51 +281,53 @@ export class TerminalLoginComponent implements OnInit, AfterViewInit, OnDestroy 
     this.addLine('', 'output');
     this.addLine('Authenticating...', 'output');
 
-    try {
-      await this.delay(500); // Simulate network delay
+    this.authService.login({
+      email: this.context.email!,
+      password: password
+    }).subscribe({
+      next: () => {
+        this.addLine('✓ Authentication successful!', 'success');
+        this.addLine('Access granted. Redirecting...', 'success');
+        this.addLine('', 'output');
 
-      await this.authService.login({
-        email: this.context.email!,
-        password: password
-      }).toPromise();
+        this.isProcessing = false;
+        this.cdr.detectChanges();
 
-      this.addLine('✓ Authentication successful!', 'success');
-      this.addLine('Access granted. Redirecting...', 'success');
-      this.addLine('', 'output');
-
-      // Stop processing indicator to show success messages clearly
-      this.isProcessing = false;
-
-      await this.delay(1500);
-      this.router.navigate(['/welcome']);
-    } catch (error) {
-      this.addLine('✗ Authentication failed.', 'error');
-      this.addLine('Invalid credentials. Please try again.', 'error');
-      this.addLine('', 'output');
-      this.context = {};
-      this.isProcessing = false;
-    }
+        // Use requestAnimationFrame for smooth transition
+        requestAnimationFrame(() => {
+          this.router.navigate(['/welcome']);
+        });
+      },
+      error: () => {
+        this.addLine('✗ Authentication failed.', 'error');
+        this.addLine('Invalid credentials. Please try again.', 'error');
+        this.addLine('', 'output');
+        this.context = {};
+        this.isProcessing = false;
+        this.cdr.detectChanges();
+        this.focusInput();
+      }
+    });
   }
 
   addLine(text: string, type: TerminalLine['type']): void {
     this.lines.push({ text, type, timestamp: new Date() });
-    this.cdr.detectChanges(); // Force Angular to detect the new line
-    setTimeout(() => this.scrollToBottom(), 10);
+    this.cdr.detectChanges();
+    // Use requestAnimationFrame for scroll
+    requestAnimationFrame(() => this.scrollToBottom());
   }
 
   private scrollToBottom(): void {
-    if (this.terminalContainer) {
+    if (this.terminalContainer?.nativeElement) {
       const element = this.terminalContainer.nativeElement;
       element.scrollTop = element.scrollHeight;
     }
   }
 
   private focusInput(): void {
-    setTimeout(() => {
-      if (this.terminalInput?.nativeElement) {
-        this.terminalInput.nativeElement.focus();
-      }
-    }, 10);
+    if (this.terminalInput?.nativeElement) {
+      this.terminalInput.nativeElement.focus();
+    }
   }
 
   focusInputDirect(): void {
@@ -333,10 +336,6 @@ export class TerminalLoginComponent implements OnInit, AfterViewInit, OnDestroy 
       // On mobile, click triggers focus which shows keyboard
       this.terminalInput.nativeElement.click();
     }
-  }
-
-  private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   getPrompt(): string {

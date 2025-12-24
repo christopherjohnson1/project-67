@@ -38,7 +38,9 @@
     autocapitalize="off"
     spellcheck="false"
     inputmode="text"
+    enterkeyhint="send"
     [attr.type]="context.awaitingPassword ? 'password' : 'text'"
+    [attr.aria-label]="context.awaitingPassword ? 'Enter password' : context.awaitingEmail ? 'Enter email' : 'Terminal input'"
   />
 </div>
 

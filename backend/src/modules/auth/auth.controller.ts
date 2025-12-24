@@ -8,7 +8,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LoginDto, AuthResponseDto } from './dto';
+import { LoginDto, AuthResponseDto, RefreshTokenDto } from './dto';
 
 /**
  * Authentication controller
@@ -37,6 +37,19 @@ export class AuthController {
     loginDto: LoginDto,
   ): Promise<AuthResponseDto> {
     return this.authService.login(loginDto);
+  }
+
+  /**
+   * Refresh token endpoint
+   * Returns new access and refresh tokens
+   */
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  async refresh(
+    @Body(new ValidationPipe({ transform: true, whitelist: true }))
+    refreshTokenDto: RefreshTokenDto,
+  ): Promise<AuthResponseDto> {
+    return this.authService.refreshTokens(refreshTokenDto.refreshToken);
   }
 }
 

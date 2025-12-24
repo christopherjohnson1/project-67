@@ -1,10 +1,9 @@
 // Service Worker for PWA
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 const CACHE_NAME = `treasure-hunt-${CACHE_VERSION}`;
 
-// Assets to precache
+// Assets to precache (only static assets, not hashed build files)
 const PRECACHE_ASSETS = [
-  '/',
   '/manifest.json',
   '/icons/icon-72x72.png',
   '/icons/icon-96x96.png',

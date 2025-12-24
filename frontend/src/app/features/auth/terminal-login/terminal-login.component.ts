@@ -65,6 +65,9 @@ export class TerminalLoginComponent implements OnInit, AfterViewInit, OnDestroy 
     requestAnimationFrame(() => {
       this.focusInput();
     });
+    
+    // Listen for keyboard appearance on mobile
+    this.setupMobileKeyboardHandling();
   }
 
   ngOnDestroy(): void {
@@ -326,14 +329,30 @@ export class TerminalLoginComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private focusInput(): void {
     if (this.terminalInput?.nativeElement) {
+      // PRE-scroll on mobile BEFORE focus to position input line immediately
+      if (/Mobi|Android/i.test(navigator.userAgent)) {
+        requestAnimationFrame(() => {
+          if (this.terminalContainer?.nativeElement) {
+            const container = this.terminalContainer.nativeElement;
+            container.scrollTop = container.scrollHeight;
+          }
+        });
+      }
+      
       this.terminalInput.nativeElement.focus();
+      
+      // Follow up with scroll adjustments after keyboard appears
+      if (/Mobi|Android/i.test(navigator.userAgent)) {
+        setTimeout(() => this.scrollInputLineIntoView(), 100);
+        setTimeout(() => this.scrollInputLineIntoView(), 300);
+        setTimeout(() => this.scrollInputLineIntoView(), 500);
+      }
     }
   }
 
   focusInputDirect(): void {
     if (this.terminalInput?.nativeElement) {
       this.terminalInput.nativeElement.focus();
-      // On mobile, click triggers focus which shows keyboard
       this.terminalInput.nativeElement.click();
     }
   }
@@ -353,9 +372,94 @@ export class TerminalLoginComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   onTerminalTouch(event: TouchEvent): void {
-    // On mobile, ensure input gets focus on touch
-    event.preventDefault();
     this.focusInput();
+    if (this.terminalInput?.nativeElement) {
+      this.terminalInput.nativeElement.click();
+    }
+  }
+
+  private scrollPending = false;
+  private wrapperElement?: HTMLElement;
+  
+  private setupMobileKeyboardHandling(): void {
+    // Get the wrapper element
+    this.wrapperElement = this.terminalContainer?.nativeElement?.closest('.terminal-wrapper') as HTMLElement;
+    
+    // Detect mobile keyboard show/hide using visualViewport API
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', () => {
+        const vvHeight = window.visualViewport?.height || window.innerHeight;
+        
+        // Adjust wrapper height to visualViewport on mobile
+        if (this.wrapperElement && /Mobi|Android/i.test(navigator.userAgent)) {
+          this.wrapperElement.style.height = `${vvHeight}px`;
+        }
+        
+        // Debounced scroll to prevent performance issues
+        if (!this.scrollPending) {
+          this.scrollPending = true;
+          requestAnimationFrame(() => {
+            this.scrollInputLineIntoView();
+            setTimeout(() => { this.scrollPending = false; }, 200);
+          });
+        }
+      });
+    }
+
+    // Fallback for browsers without visualViewport
+    window.addEventListener('resize', () => {
+      if (!this.scrollPending) {
+        this.scrollPending = true;
+        requestAnimationFrame(() => {
+          this.scrollInputLineIntoView();
+          setTimeout(() => { this.scrollPending = false; }, 200);
+        });
+      }
+    });
+
+    // Scroll when input gains focus
+    if (this.terminalInput?.nativeElement) {
+      this.terminalInput.nativeElement.addEventListener('focus', () => {
+        // Multiple scroll attempts to handle keyboard appearance timing
+        setTimeout(() => this.scrollInputLineIntoView(), 100);
+        setTimeout(() => this.scrollInputLineIntoView(), 300);
+        setTimeout(() => this.scrollInputLineIntoView(), 500);
+      });
+      
+      this.terminalInput.nativeElement.addEventListener('blur', () => {
+        // On mobile, immediately refocus if blur wasn't user-initiated
+        if (/Mobi|Android/i.test(navigator.userAgent) && !this.isProcessing) {
+          setTimeout(() => {
+            if (this.terminalInput?.nativeElement && 
+                document.activeElement !== this.terminalInput.nativeElement) {
+              this.terminalInput.nativeElement.focus();
+            }
+          }, 50);
+        }
+      });
+    }
+  }
+
+  private scrollInputLineIntoView(): void {
+    if (!this.terminalContainer?.nativeElement) return;
+
+    const container = this.terminalContainer.nativeElement;
+    const inputLine = container.querySelector('.terminal-input-line') as HTMLElement;
+    
+    if (inputLine) {
+      const viewportHeight = window.visualViewport?.height || window.innerHeight;
+      const inputLineRect = inputLine.getBoundingClientRect();
+      
+      // If input line is below the visible viewport (hidden by keyboard)
+      if (inputLineRect.bottom > viewportHeight) {
+        // Use instant scroll to avoid feedback loops
+        inputLine.scrollIntoView({
+          behavior: 'instant',
+          block: 'center',
+          inline: 'nearest'
+        });
+      }
+    }
   }
 }
 

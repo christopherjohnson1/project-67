@@ -212,7 +212,7 @@ $terminal-info: #00aaff;
   }
 }
 
-// Universal input field - hidden on all devices
+// Universal input field - positioned over input line on mobile, hidden off-screen on desktop
 .terminal-input {
   position: absolute;
   left: -9999px;
@@ -220,9 +220,26 @@ $terminal-info: #00aaff;
   height: 1px;
   opacity: 0;
   font-size: 16px; // Prevent zoom on iOS when focused
+  pointer-events: none;
   
   &:focus {
     outline: none;
+  }
+}
+
+// On mobile, cover entire terminal so direct taps trigger native focus
+@media (max-width: 768px) {
+  .terminal-input {
+    // Cover the entire terminal area
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0; // Fully transparent
+    pointer-events: auto; // Allow all touches to hit it
+    z-index: 5; // Above terminal content but allow text selection
+    background: transparent;
   }
 }
 

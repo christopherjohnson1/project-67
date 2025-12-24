@@ -1,0 +1,43 @@
+<aside class="sidebar" [class.collapsed]="collapsed">
+  <!-- User Info Section -->
+  <div class="sidebar__header">
+    <div class="user-info">
+      <div class="user-info__avatar">
+        <span class="avatar-icon">👤</span>
+      </div>
+      <div class="user-info__details" *ngIf="!collapsed">
+        <h3 class="user-info__name">{{ userInfo.username }}</h3>
+        <span class="user-info__level" *ngIf="userInfo.level">Level {{ userInfo.level }}</span>
+      </div>
+    </div>
+
+    <!-- Currency Display -->
+    <div class="currency" *ngIf="!collapsed">
+      <div class="currency__item">
+        <span class="currency__icon">🪙</span>
+        <span class="currency__value">{{ userInfo.coins }}</span>
+      </div>
+      <div class="currency__item">
+        <span class="currency__icon">⭐</span>
+        <span class="currency__value">{{ userInfo.stars }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Menu -->
+  <nav class="sidebar__menu">
+    <ul class="menu-list">
+      <li *ngFor="let item of menuItems" class="menu-list__item">
+        <button 
+          class="menu-button" 
+          [class.menu-button--logout]="item.id === 'logout'"
+          (click)="item.action()"
+          [attr.aria-label]="item.label">
+          <span class="menu-button__icon">{{ item.icon }}</span>
+          <span class="menu-button__label" *ngIf="!collapsed">{{ item.label }}</span>
+        </button>
+      </li>
+    </ul>
+  </nav>
+</aside>
+

@@ -115,6 +115,46 @@ curl http://localhost/health
 
 ## Development Workflow
 
+### Quick Reference - Available Scripts
+
+| Script | Use Case | Rebuild |
+|--------|----------|---------|
+| `./dev-rebuild.sh` | **Local dev** - Test changes before PR | Full rebuild |
+| `./quick-deploy.sh` | Production - Code changes only | No rebuild |
+| `./deploy.sh` | Production - Full deployment | Full rebuild |
+
+### Local Development with Docker (Recommended)
+
+**Quick rebuild for testing changes:**
+```bash
+./dev-rebuild.sh
+```
+
+This script:
+- ✅ Stops all containers
+- ✅ Rebuilds all images with your latest local changes
+- ✅ Starts all services
+- ✅ Shows status and logs
+- ✅ Perfect for testing before creating a PR
+
+Navigate to http://localhost to see your changes.
+
+**Manual Docker commands:**
+```bash
+# Start all services
+docker compose up -d
+
+# Rebuild specific service
+docker compose build --no-cache frontend
+docker compose build --no-cache backend
+
+# View logs
+docker compose logs -f
+
+# Stop all services
+docker compose down
+```
+
 ### Local Development (Without Docker)
 
 **Backend:**
@@ -137,22 +177,6 @@ ng serve
 ```bash
 # Start only the database container
 docker compose up db -d
-```
-
-### With Docker
-
-```bash
-# Start all services
-npm run docker:up
-
-# Rebuild after changes
-npm run docker:rebuild
-
-# View logs
-npm run docker:logs
-
-# Stop all services
-npm run docker:down
 ```
 
 ## Environment Variables
@@ -267,11 +291,12 @@ chmod +x deploy.sh quick-deploy.sh
 
 ### Deployment Options
 
-| Script | Use Case | Time |
-|--------|----------|------|
-| `./deploy.sh` | Full rebuild (dependencies changed) | ~10-15 min |
-| `./quick-deploy.sh` | Code changes only (no dependencies) | ~30 sec |
-| `./deploy.sh --no-rebuild` | Pull and restart (no rebuild) | ~1 min |
+| Script | Environment | Use Case | Time |
+|--------|-------------|----------|------|
+| `./dev-rebuild.sh` | **Local dev** | Test changes before PR | ~1-2 min |
+| `./deploy.sh` | Production (Pi) | Full rebuild (dependencies changed) | ~10-15 min |
+| `./quick-deploy.sh` | Production (Pi) | Code changes only (no dependencies) | ~30 sec |
+| `./deploy.sh --no-rebuild` | Production (Pi) | Pull and restart (no rebuild) | ~1 min |
 
 ### What the Deploy Script Does
 

@@ -174,3 +174,4 @@ See these files for correct implementations:
 - `frontend/src/app/features/auth/welcome/welcome.component.ts`
 - `frontend/src/app/core/interceptors/auth.interceptor.ts`
 
+

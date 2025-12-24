@@ -1,7 +1,10 @@
 /* Global Styles for Treasure Hunt App */
 
-// Import Angular Material theming
+// Import Angular Material theming FIRST (must be before other rules)
 @use '@angular/material' as mat;
+
+// Import Google Fonts
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lato:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&display=swap');
 
 // Include the common styles for Angular Material
 @include mat.core();
@@ -25,6 +28,132 @@ $treasure-hunt-theme: mat.define-theme((
 // Include theme styles for core and all components
 @include mat.all-component-themes($treasure-hunt-theme);
 
+// ============================================================================
+// CSS VARIABLES - Treasure Hunt Design System
+// ============================================================================
+
+:root {
+  // === COLOR PALETTE ===
+  // Primary Colors (Game Board Inspired)
+  --color-gold-primary: #D4AF37;
+  --color-gold-light: #FFB347;
+  --color-gold-bright: #FFA500;
+  --color-gold-pyramid: #FFD700;
+  
+  --color-sand-light: #D2B48C;
+  --color-sand-medium: #C2B280;
+  --color-sand-dark: #8B7355;
+  
+  --color-teal-primary: #20B2AA;
+  --color-teal-light: #48D1CC;
+  --color-teal-bright: #40E0D0;
+  
+  --color-brown-dark: #3E2723;
+  --color-brown-medium: #654321;
+  --color-brown-light: #8B4513;
+  
+  // Accent Colors
+  --color-success: #228B22;
+  --color-danger: #DC143C;
+  --color-info: #87CEEB;
+  --color-warning: #FFA500;
+  
+  // Semantic Colors
+  --color-background-primary: rgba(62, 39, 35, 0.95);
+  --color-background-secondary: rgba(139, 69, 19, 0.8);
+  --color-background-modal: #FFF8DC; // Parchment
+  --color-text-primary: #3E2723;
+  --color-text-secondary: #654321;
+  --color-text-light: rgba(255, 255, 255, 0.95);
+  
+  // === SPACING ===
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-3xl: 64px;
+  
+  // === BORDERS ===
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+  --border-width-thin: 1px;
+  --border-width-medium: 2px;
+  --border-width-thick: 3px;
+  --border-color-gold: var(--color-gold-primary);
+  --border-color-sand: var(--color-sand-dark);
+  
+  // === SHADOWS ===
+  --shadow-sm: 0 1px 2px rgba(62, 39, 35, 0.1);
+  --shadow-md: 0 4px 6px rgba(62, 39, 35, 0.15);
+  --shadow-lg: 0 10px 20px rgba(62, 39, 35, 0.2);
+  --shadow-xl: 0 20px 40px rgba(62, 39, 35, 0.3);
+  --shadow-gold: 0 0 20px rgba(212, 175, 55, 0.5);
+  --shadow-teal: 0 0 15px rgba(32, 178, 170, 0.4);
+  
+  // === TYPOGRAPHY ===
+  --font-family-primary: 'Lato', 'Open Sans', system-ui, sans-serif;
+  --font-family-heading: 'Cinzel', 'Playfair Display', serif;
+  --font-family-display: 'Cinzel', cursive;
+  
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-base: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 32px;
+  --font-size-4xl: 40px;
+  
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+  
+  // === TRANSITIONS ===
+  --transition-fast: 150ms ease-in-out;
+  --transition-normal: 300ms ease-in-out;
+  --transition-slow: 500ms ease-in-out;
+  --transition-bezier: cubic-bezier(0.4, 0, 0.2, 1);
+  
+  // === Z-INDEX ===
+  --z-index-dropdown: 1000;
+  --z-index-sticky: 1020;
+  --z-index-modal-backdrop: 1040;
+  --z-index-modal: 1050;
+  --z-index-popover: 1060;
+  --z-index-tooltip: 1070;
+  
+  // === COMPONENT-SPECIFIC ===
+  --sidebar-width: 300px;
+  --sidebar-collapsed-width: 60px;
+  --header-height: 64px;
+  --footer-height: 48px;
+  
+  --node-size-desktop: 40px;
+  --node-size-mobile: 32px;
+  --avatar-size-desktop: 80px;
+  --avatar-size-mobile: 50px;
+  
+  --modal-max-width: 800px;
+  --modal-padding: var(--spacing-xl);
+  
+  // === BREAKPOINTS (for use in media queries) ===
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+}
+
+// ============================================================================
 // Global styles
 * {
   margin: 0;
@@ -78,6 +207,18 @@ html {
 
 // Focus styles for accessibility
 *:focus-visible {
-  outline: 2px solid #ffc107;
+  outline: 2px solid var(--color-gold-primary);
   outline-offset: 2px;
+}
+
+// Reduced motion for accessibility
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

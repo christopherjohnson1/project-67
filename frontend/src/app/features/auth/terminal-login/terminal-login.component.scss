@@ -15,7 +15,7 @@ $terminal-prompt: #ffaa00;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   background: $terminal-bg;
   display: flex;
   flex-direction: column;
@@ -207,43 +207,17 @@ $terminal-prompt: #ffaa00;
   }
 }
 
-// Universal input field
+// Universal input field - hidden on all devices
 .terminal-input {
-  // On desktop, hide completely
   position: absolute;
   left: -9999px;
   width: 1px;
   height: 1px;
   opacity: 0;
+  font-size: 16px; // Prevent zoom on iOS when focused
 
-  // On mobile, make it visible and accessible
-  @media (max-width: 768px) {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 56px;
-    opacity: 1;
-    font-size: 16px; // Prevent zoom on iOS
-    font-family: 'Courier New', 'Monaco', 'Consolas', monospace;
-    background: rgba(0, 0, 0, 0.9);
-    border: none;
-    border-top: 2px solid $terminal-green;
-    color: $terminal-green;
-    padding: 12px 20px;
-    z-index: 1000;
-    caret-color: $terminal-green;
-    box-shadow: 0 -4px 12px rgba(0, 255, 0, 0.2);
-
-    &:focus {
-      outline: none;
-      background: rgba(0, 0, 0, 0.95);
-      border-top-color: $terminal-success;
-    }
-
-    &::placeholder {
-      color: rgba(0, 255, 0, 0.5);
-    }
+  &:focus {
+    outline: none;
   }
 }
 
@@ -251,7 +225,7 @@ $terminal-prompt: #ffaa00;
 @media (max-width: 768px) {
   .terminal-container {
     padding: 15px;
-    padding-bottom: 70px; // Make room for input at bottom
+    padding-bottom: 20px; // Minimal padding since input is hidden
     font-size: 14px;
   }
 

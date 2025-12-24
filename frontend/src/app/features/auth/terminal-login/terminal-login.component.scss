@@ -128,6 +128,8 @@ $terminal-prompt: #ffaa00;
   display: flex;
   align-items: center;
   gap: 8px;
+  position: relative; // For mobile input overlay positioning
+  min-height: 44px; // Ensure touch target is large enough on mobile
 }
 
 .terminal-prompt {
@@ -205,31 +207,42 @@ $terminal-prompt: #ffaa00;
   }
 }
 
-// Hidden input field for mobile keyboard
+// Hidden input field for desktop (completely hidden)
 .terminal-hidden-input {
   position: absolute;
   left: -9999px;
   width: 1px;
   height: 1px;
   opacity: 0;
+  pointer-events: none;
+}
+
+// Mobile input overlay - positioned over the input line
+.terminal-mobile-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 44px; // Ensure touch target is large enough
+  opacity: 0;
+  font-size: 16px; // Prevent zoom on iOS
+  border: none;
+  background: transparent;
+  color: transparent;
+  caret-color: transparent;
+  padding: 0;
+  margin: 0;
+  z-index: 10;
+  cursor: text;
   
-  // On mobile, we want the input to be accessible but invisible
-  @media (max-width: 768px) {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 44px;
-    opacity: 0.01; // Almost invisible but still tappable
-    font-size: 16px; // Prevent zoom on iOS
-    border: none;
-    background: transparent;
-    color: transparent;
-    caret-color: transparent;
-    
-    &:focus {
-      outline: none;
-    }
+  &:focus {
+    outline: none;
+  }
+  
+  // Only show on mobile
+  @media (min-width: 769px) {
+    display: none !important;
   }
 }
 

@@ -1,4 +1,4 @@
-<div class="terminal-wrapper" (click)="onTerminalClick()">
+<div class="terminal-wrapper" (click)="onTerminalClick()" (touchstart)="onTerminalTouch($event)">
   <div class="terminal-container" #terminalContainer>
     <div class="terminal-content">
       <!-- Terminal output lines -->
@@ -16,6 +16,20 @@
           <span *ngIf="!context.awaitingPassword">{{ currentInput }}</span>
           <span class="terminal-cursor" [class.blink]="showCursor">█</span>
         </span>
+        <!-- Mobile input overlay - positioned over the input line for keyboard access -->
+        <input
+          #terminalInput
+          type="text"
+          class="terminal-mobile-input"
+          [(ngModel)]="currentInput"
+          (keydown)="handleInput($event)"
+          [disabled]="isProcessing"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+          [attr.type]="context.awaitingPassword ? 'password' : 'text'"
+        />
       </div>
 
       <!-- Processing indicator -->
@@ -25,9 +39,9 @@
     </div>
   </div>
 
-  <!-- Hidden input field for mobile keyboard support -->
+  <!-- Desktop input field (hidden) -->
   <input
-    #terminalInput
+    #terminalInputDesktop
     type="text"
     class="terminal-hidden-input"
     [(ngModel)]="currentInput"

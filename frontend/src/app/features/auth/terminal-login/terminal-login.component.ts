@@ -25,6 +25,7 @@ interface CommandContext {
 })
 export class TerminalLoginComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('terminalInput') terminalInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('terminalInputDesktop') terminalInputDesktop!: ElementRef<HTMLInputElement>;
   @ViewChild('terminalContainer') terminalContainer!: ElementRef<HTMLDivElement>;
 
   lines: TerminalLine[] = [];
@@ -312,8 +313,12 @@ export class TerminalLoginComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private focusInput(): void {
     setTimeout(() => {
-      if (this.terminalInput) {
-        this.terminalInput.nativeElement.focus();
+      // On mobile, use the mobile input; on desktop, use the hidden input
+      const isMobile = window.innerWidth <= 768;
+      const inputToFocus = isMobile ? this.terminalInput : this.terminalInputDesktop;
+      
+      if (inputToFocus?.nativeElement) {
+        inputToFocus.nativeElement.focus();
       }
     }, 10);
   }
@@ -333,6 +338,12 @@ export class TerminalLoginComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   onTerminalClick(): void {
+    this.focusInput();
+  }
+
+  onTerminalTouch(event: TouchEvent): void {
+    // On mobile, ensure input gets focus on touch
+    event.preventDefault();
     this.focusInput();
   }
 }

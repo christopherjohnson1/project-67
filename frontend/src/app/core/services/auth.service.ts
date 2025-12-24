@@ -15,9 +15,12 @@ import { AuthResponse, LoginCredentials, RegisterData, User } from '../models/us
 export class AuthService {
   private readonly apiUrl = `${environment.apiUrl}/auth`;
   private readonly TOKEN_KEY = 'treasure_hunt_token';
+  private readonly REFRESH_TOKEN_KEY = 'treasure_hunt_refresh_token';
   private readonly USER_KEY = 'treasure_hunt_user';
   
   private currentUserSubject = new BehaviorSubject<User | null>(this.getUserFromStorage());
+  private isRefreshing = false;
+  private refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
   constructor(private readonly http: HttpClient) {}
 
@@ -49,10 +52,48 @@ export class AuthService {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap(response => {
         this.setToken(response.accessToken);
+        this.setRefreshToken(response.refreshToken);
         this.setUser(response.user);
         this.currentUserSubject.next(response.user);
       })
     );
+  }
+
+  /**
+   * Refresh access token using refresh token
+   */
+  refreshToken(): Observable<AuthResponse> {
+    const refreshToken = this.getRefreshToken();
+    if (!refreshToken) {
+      throw new Error('No refresh token available');
+    }
+
+    this.isRefreshing = true;
+
+    return this.http.post<AuthResponse>(`${this.apiUrl}/refresh`, { refreshToken }).pipe(
+      tap(response => {
+        this.setToken(response.accessToken);
+        this.setRefreshToken(response.refreshToken);
+        this.setUser(response.user);
+        this.currentUserSubject.next(response.user);
+        this.isRefreshing = false;
+        this.refreshTokenSubject.next(response.accessToken);
+      })
+    );
+  }
+
+  /**
+   * Check if token refresh is in progress
+   */
+  get isRefreshingToken(): boolean {
+    return this.isRefreshing;
+  }
+
+  /**
+   * Get refresh token subject for waiting on refresh
+   */
+  get refreshTokenSubject$() {
+    return this.refreshTokenSubject.asObservable();
   }
 
   /**
@@ -73,6 +114,7 @@ export class AuthService {
    */
   logout(): void {
     this.clearToken();
+    this.clearRefreshToken();
     this.clearUser();
     this.currentUserSubject.next(null);
   }
@@ -118,6 +160,20 @@ export class AuthService {
   }
 
   /**
+   * Get stored refresh token
+   */
+  getRefreshToken(): string | null {
+    return localStorage.getItem(this.REFRESH_TOKEN_KEY);
+  }
+
+  /**
+   * Store refresh token
+   */
+  private setRefreshToken(token: string): void {
+    localStorage.setItem(this.REFRESH_TOKEN_KEY, token);
+  }
+
+  /**
    * Store user data
    */
   private setUser(user: User): void {
@@ -129,6 +185,13 @@ export class AuthService {
    */
   private clearToken(): void {
     localStorage.removeItem(this.TOKEN_KEY);
+  }
+
+  /**
+   * Clear stored refresh token
+   */
+  private clearRefreshToken(): void {
+    localStorage.removeItem(this.REFRESH_TOKEN_KEY);
   }
 
   /**

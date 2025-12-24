@@ -544,4 +544,3 @@ The plan breaks down into these key tasks:
 
 - Seasonal payment items (limited time)
 - Trading payment items between players (if multiplayer added)
-- Buddy-specific achievements (hire Jazz 10 times, etc.)

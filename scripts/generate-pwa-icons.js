@@ -89,8 +89,8 @@ async function generateIcons() {
     console.error('✗ Failed to generate Apple Touch Icon:', error.message);
   }
 
-  // Generate favicon
-  const faviconPath = path.join(__dirname, '../frontend/public/favicon.ico');
+  // Generate favicons
+  const favicon32Path = path.join(outputDir, '../favicon-32x32.png');
   try {
     await sharp(sourceImage)
       .resize(32, 32, {
@@ -98,14 +98,35 @@ async function generateIcons() {
         background: { r: 0, g: 0, b: 0, alpha: 0 }
       })
       .png()
-      .toFile(faviconPath);
+      .toFile(favicon32Path);
     
-    console.log('✓ Generated favicon');
+    console.log('✓ Generated favicon-32x32.png');
   } catch (error) {
-    console.error('✗ Failed to generate favicon:', error.message);
+    console.error('✗ Failed to generate favicon-32x32.png:', error.message);
+  }
+
+  const favicon16Path = path.join(outputDir, '../favicon-16x16.png');
+  try {
+    await sharp(sourceImage)
+      .resize(16, 16, {
+        fit: 'contain',
+        background: { r: 0, g: 0, b: 0, alpha: 0 }
+      })
+      .png()
+      .toFile(favicon16Path);
+    
+    console.log('✓ Generated favicon-16x16.png');
+  } catch (error) {
+    console.error('✗ Failed to generate favicon-16x16.png:', error.message);
   }
 
   console.log('\n✅ Icon generation complete!');
+  console.log('\nGenerated files:');
+  console.log('  - 8 standard icons (72x72 to 512x512)');
+  console.log('  - 2 maskable icons (192x192, 512x512)');
+  console.log('  - 1 Apple Touch Icon (180x180)');
+  console.log('  - 2 favicons (16x16, 32x32)');
+  console.log('\nTotal: 13 icon files');
 }
 
 // Run the script

@@ -1,5 +1,5 @@
 // Service Worker for PWA
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v4';
 const CACHE_NAME = `treasure-hunt-${CACHE_VERSION}`;
 
 // Assets to precache (only static assets, not hashed build files)
@@ -22,11 +22,17 @@ const PRECACHE_ASSETS = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(PRECACHE_ASSETS).catch((error) => {
-        console.error('Failed to cache assets:', error);
-        // Continue even if some assets fail to cache
-      });
+      // Cache each asset individually so one failure doesn't break all
+      return Promise.all(
+        PRECACHE_ASSETS.map(url =>
+          cache.add(url).catch((error) => {
+            console.warn(`Failed to cache ${url}:`, error.message);
+            // Continue even if this asset fails
+          })
+        )
+      );
     }).then(() => {
+      console.log('Service worker installed');
       return self.skipWaiting();
     })
   );

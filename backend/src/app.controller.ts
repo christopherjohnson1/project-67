@@ -1,5 +1,5 @@
 import { Controller, Get, Res } from '@nestjs/common';
-import { Response } from 'express';
+import type { Response } from 'express';
 import { join } from 'path';
 import { AppService } from './app.service';
 
@@ -13,8 +13,8 @@ export class AppController {
   }
 
   @Get('boop')
-  async getBoop(@Res() res: Response) {
-    const filePath = join(__dirname, '..', 'uploads', 'boop.png');
+  getBoop(@Res() res: Response) {
+    const filePath = join(__dirname, '..', 'assets', 'boop.png');
     return res.sendFile(filePath);
   }
 }

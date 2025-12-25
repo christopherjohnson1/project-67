@@ -47,6 +47,9 @@ RUN npm ci --only=production && \
 # Copy built application from builder stage
 COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist
 
+# Copy static assets
+COPY --chown=nodejs:nodejs assets ./assets
+
 # Create uploads directory
 RUN mkdir -p /app/uploads && chown nodejs:nodejs /app/uploads
 
